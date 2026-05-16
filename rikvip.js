@@ -584,13 +584,10 @@ store.Phien_hien_tai = Number(store.Phien) + 1;
 
 // LUÔN CÓ DỰ ĐOÁN
 if (vipPrediction !== 'Bỏ') {
-  store.Du_doan = vipPrediction;
-} else {
-  store.Du_doan = pred.chosen === 'Tai'
-    ? 'Tài'
-    : 'Xỉu';
-}
-
+  store.Du_doan =
+  vipPrediction === 'Tài' || vipPrediction === 'Xỉu'
+    ? vipPrediction
+    : (pred.chosen === 'Tai' ? 'Tài' : 'Xỉu');
 // Boost confidence thật hơn
 let finalConfidence = pred.confidence;
 
@@ -682,18 +679,20 @@ async function pollTaiXiu() {
               last_sid_100 = sid;
               const total = d1 + d2 + d3;
               const result = {
-                Phien: sid,
-                Xuc_xac_1: d1,
-                Xuc_xac_2: d2,
-                Xuc_xac_3: d3,
-                Tong_diem: total,
-                Pattern: "",
-                Du_doan: "Chua co",
-                Tong_du_doan: 0,
-                Tong_thang: 0,
-                Tong_thua: 0,
-                Id: ID_TAG
-              };
+                const result = {
+  Phien: sid,
+  Xuc_xac_1: d1,
+  Xuc_xac_2: d2,
+  Xuc_xac_3: d3,
+  Tong_diem: total,
+  Pattern: "",
+  Phien_hien_tai: Number(sid) + 1,
+  Du_doan: "Chua co",
+  Tong_du_doan: 0,
+  Tong_thang: 0,
+  Tong_thua: 0,
+  Id: ID_TAG
+};
 
               updateResult(latest_result_100, history_100, advanced_tx, globalStats.ban_tai_xiu, result, "BAN TAI XIU");
 
@@ -746,18 +745,19 @@ if (sid && sid !== last_sid_101) {
               const total = game.d1 + game.d2 + game.d3;
               
               const result = {
-                Phien: sid,
-                Xuc_xac_1: game.d1,
-                Xuc_xac_2: game.d2,
-                Xuc_xac_3: game.d3,
-                Tong_diem: total,
-                Pattern: "",
-                Du_doan: "Chua co",
-                Tong_du_doan: 0,
-                Tong_thang: 0,
-                Tong_thua: 0,
-                Id: ID_TAG
-              };
+  Phien: sid,
+  Xuc_xac_1: game.d1,
+  Xuc_xac_2: game.d2,
+  Xuc_xac_3: game.d3,
+  Tong_diem: total,
+  Pattern: "",
+  Phien_hien_tai: Number(sid) + 1,
+  Du_doan: "Chua co",
+  Tong_du_doan: 0,
+  Tong_thang: 0,
+  Tong_thua: 0,
+  Id: ID_TAG
+};
 
               updateResult(latest_result_101, history_101, advanced_md5, globalStats.ban_md5, result, "BAN MD5");
 
