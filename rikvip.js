@@ -585,9 +585,15 @@ store.Phien_hien_tai = Number(store.Phien) + 1;
 // LUÔN CÓ DỰ ĐOÁN
 if (vipPrediction !== 'Bỏ') {
   store.Du_doan =
-  vipPrediction === 'Tài' || vipPrediction === 'Xỉu'
-    ? vipPrediction
-    : (pred.chosen === 'Tai' ? 'Tài' : 'Xỉu');
+    vipPrediction === 'Tài' || vipPrediction === 'Xỉu'
+      ? vipPrediction
+      : (pred.chosen === 'Tai' ? 'Tài' : 'Xỉu');
+} else {
+  store.Du_doan =
+    pred.chosen === 'Tai'
+      ? 'Tài'
+      : 'Xỉu';
+}
 // Boost confidence thật hơn
 let finalConfidence = pred.confidence;
 
