@@ -348,7 +348,7 @@ taiScore > xiuScore ? 'Tài' : 'Xỉu';
 
 class AdvancedMarkovAnalyzer {
   constructor({
-    states = ['Tai', 'Xiu'],
+  states = ['Tài', 'Xỉu'],
     order = 2,
     decay = 0.98,
     laplace = 1,
@@ -582,26 +582,38 @@ const pred = analyzer.predictEnsemble();
 // Phiên hiện tại đang chạy
 store.Phien_hien_tai = Number(store.Phien) + 1;
 
-// LUÔN CÓ DỰ ĐOÁN
-if (vipPrediction !== 'Bỏ') {
-  store.Du_doan =
-    vipPrediction === 'Tài' || vipPrediction === 'Xỉu'
-      ? vipPrediction
-      : (pred.chosen === 'Tai' ? 'Tài' : 'Xỉu');
-} else {
-  store.Du_doan =
-    pred.chosen === 'Tai'
+// Ưu tiên thuật toán AI + Markov
+let finalPredict = 'Xỉu';
+
+// AI predict
+if (vipPrediction === 'Tài' || vipPrediction === 'Xỉu') {
+  finalPredict = vipPrediction;
+}
+
+// Markov confidence cao thì override
+if (pred.confidence >= 0.15) {
+  finalPredict =
+    pred.chosen === 'Tài'
       ? 'Tài'
       : 'Xỉu';
 }
 
+if (
+  (vipPrediction === 'Tài' && pred.chosen === 'Tài') ||
+  (vipPrediction === 'Xỉu' && pred.chosen === 'Xỉu')
+) {
+  finalPredict = vipPrediction;
+}
+
+store.Du_doan = finalPredict;
+
 // Boost confidence thật hơn
 let finalConfidence = pred.confidence;
 
-// AI + bridge cùng hướng => tăng
+// AI + Markov cùng hướng => tăng confidence
 if (
-  (vipPrediction === 'Tài' && pred.chosen === 'Tai') ||
-  (vipPrediction === 'Xỉu' && pred.chosen === 'Xiu')
+  (vipPrediction === 'Tài' && pred.chosen === 'Tài') ||
+  (vipPrediction === 'Xỉu' && pred.chosen === 'Xỉu')
 ) {
   finalConfidence += 0.08;
 }
@@ -616,10 +628,10 @@ store.Du_doan_confidence = parseFloat(
 store.Du_doan_probs = pred.probs;
 
   analyzer.savePrediction(store.Phien_hien_tai, {
-    prediction: pred.chosen,
-    probs: pred.probs,
-    confidence: pred.confidence
-  });
+  prediction: finalPredict,
+  probs: pred.probs,
+  confidence: finalConfidence
+});
 
   if (history.length >= 1) {
     const previousGame = history[0];
