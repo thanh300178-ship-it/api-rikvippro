@@ -1,0 +1,16 @@
+{
+  "name": "advanced-analyzer",
+  "version": "1.0.0",
+  "description": "Advanced Tai Xiu Analyzer",
+  "main": "rikvip.js",
+  "scripts": {
+    "start": "node rikvip.js"
+  },
+  "dependencies": {
+    "axios": "^1.8.1",
+    "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
