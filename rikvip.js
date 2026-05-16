@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 8000;
 const POLL_INTERVAL = 800;
 const RETRY_DELAY = 5000;
 const MAX_HISTORY = 1000;
-const ID_TAG = "@tiendataox";
+const ID_TAG = "@anhphong06";
 
 let latest_result_100 = {
   Phien: 0,
@@ -336,9 +336,8 @@ function generatePrediction(history, modelPredictionsRef) {
     if (bridgePred.prediction === 1) taiScore += 0.25; else xiuScore += 0.25; // Giảm ảnh hưởng
   }
 
-  if (Math.abs(taiScore - xiuScore) < 0.25) {
-  console.log('SKIP - confidence low');
-  return 'Bỏ';
+  if (Math.abs(taiScore - xiuScore) < 0.10) {
+  console.log('LOW CONFIDENCE');
 }
 
 const finalPrediction =
@@ -583,14 +582,13 @@ const pred = analyzer.predictEnsemble();
 // Phiên hiện tại đang chạy
 store.Phien_hien_tai = Number(store.Phien) + 1;
 
-// Nếu confidence thấp thì bỏ
-if (
-  vipPrediction === 'Bỏ' ||
-  pred.confidence < 0.12
-) {
-  store.Du_doan = "Bỏ";
-} else {
+// LUÔN CÓ DỰ ĐOÁN
+if (vipPrediction !== 'Bỏ') {
   store.Du_doan = vipPrediction;
+} else {
+  store.Du_doan = pred.chosen === 'Tai'
+    ? 'Tài'
+    : 'Xỉu';
 }
 
 // Boost confidence thật hơn
