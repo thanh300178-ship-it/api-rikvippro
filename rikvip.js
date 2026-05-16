@@ -594,6 +594,7 @@ if (vipPrediction !== 'Bỏ') {
       ? 'Tài'
       : 'Xỉu';
 }
+
 // Boost confidence thật hơn
 let finalConfidence = pred.confidence;
 
