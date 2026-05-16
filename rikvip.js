@@ -679,7 +679,6 @@ async function pollTaiXiu() {
               last_sid_100 = sid;
               const total = d1 + d2 + d3;
               const result = {
-                const result = {
   Phien: sid,
   Xuc_xac_1: d1,
   Xuc_xac_2: d2,
