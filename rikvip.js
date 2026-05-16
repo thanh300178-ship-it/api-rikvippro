@@ -1,5 +1,3 @@
-// server.js
-// Advanced Markov / Pattern Analyzer - educational/research use only
 
 const express = require('express');
 const axios = require('axios');
@@ -582,12 +580,35 @@ function updateResult(store, history, analyzer, stats, result, tableName) {
 
 const pred = analyzer.predictEnsemble();
 
-store.Phien_hien_tai = store.Phien + 1;
+// Phiên hiện tại đang chạy
+store.Phien_hien_tai = Number(store.Phien) + 1;
 
-store.Du_doan = vipPrediction;
+// Nếu confidence thấp thì bỏ
+if (
+  vipPrediction === 'Bỏ' ||
+  pred.confidence < 0.12
+) {
+  store.Du_doan = "Bỏ";
+} else {
+  store.Du_doan = vipPrediction;
+}
+
+// Boost confidence thật hơn
+let finalConfidence = pred.confidence;
+
+// AI + bridge cùng hướng => tăng
+if (
+  (vipPrediction === 'Tài' && pred.chosen === 'Tai') ||
+  (vipPrediction === 'Xỉu' && pred.chosen === 'Xiu')
+) {
+  finalConfidence += 0.08;
+}
+
+// Giới hạn
+if (finalConfidence > 0.99) finalConfidence = 0.99;
 
 store.Du_doan_confidence = parseFloat(
-  pred.confidence.toFixed(3)
+  finalConfidence.toFixed(3)
 );
 
 store.Du_doan_probs = pred.probs;
